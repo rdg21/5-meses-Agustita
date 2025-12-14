@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 meses contigo</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:linear-gradient(135deg,#f5a6c8,#c084fc);
+  font-family:Arial,sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+.section{
+  display:none;
+  width:100vw;
+  height:100vh;
+  padding:20px;
+  text-align:center;
+}
+
+.active{display:flex;flex-direction:column;justify-content:center;align-items:center}
+
+.fade{animation:fade 1.2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+button{
+  margin-top:20px;
+  padding:14px 30px;
+  border:none;
+  border-radius:25px;
+  font-size:1rem;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:20px;
+}
+
+.card{
+  width:100%;
+  aspect-ratio:1/1;
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+}
+
+.cover{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.5);
+}
+
+.msg{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-weight:bold;
+  animation:fade 1.5s;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bg" src="intro.mp3" autoplay loop></audio>
+<audio id="ellaSong" src="ella.mp3"></audio>
+<audio id="nosSong" src="nosotros.mp3"></audio>
+<audio id="yoSong" src="yo.mp3"></audio>
+
+<div id="s1" class="section active fade">
+  <p>
+    Hola mi amorcito preciosa.<br><br>
+    Han pasado 5 meses desde que nos conocemos y siento que se han pasado volando.
+    Ahora quiero mostrarte algunas cosas para que veas lo lindo que ha sido todo este tiempo juntos.
+  </p>
+</div>
+
+<div id="s2" class="section">
+  <h1>Tu y yo</h1>
+  <img src="foto_portada.jpg" style="width:200px;border-radius:12px;margin-top:20px">
+  <button onclick="openBook()">Abrir</button>
+</div>
+
+<div id="s3" class="section">
+  <p>Esta vez no te mostraré fotos por tiempo, te mostraré un poco de todo.</p>
+</div>
+
+<div id="s4" class="section">
+  <h2>Mi mujer la más hermosa de todo el universo</h2>
+  <div class="grid" id="ellaGrid"></div>
+</div>
+
+<div id="s5" class="section">
+  <h2>Nosotros</h2>
+  <div class="grid" id="nosGrid"></div>
+</div>
+
+<div id="s6" class="section">
+  <p>Yo mirando a la mejor persona que pude conocer en mi vida y que amo con toda mi alma</p>
+  <img src="yo.jpg" style="width:200px;border-radius:12px;margin-top:20px">
+  <button onclick="revealElla()">Continuar</button>
+</div>
+
+<div id="s7" class="section">
+  <img src="ella_final.jpg" style="width:220px;border-radius:12px">
+  <button onclick="sorpresa()">Sorpresita</button>
+</div>
+
+<div id="s8" class="section">
+  <p>
+    Te amaré toda la vida.  
+    Quiero que me ames toda la vida.  
+    Quiero que estemos juntos hasta que terminemos muertos.  
+    No quiero perderte nunca.  
+    Te quiero siempre a mi lado.  
+    Gracias por todo este tiempo juntos.
+  </p>
+</div>
+
+<script>
+const frases=[
+"DIOS QUE PRECIOSA",
+"QUE MUJER",
+"ME ENCANTAS",
+"NO PUEDES SER TAN LINDA",
+"MIA SOLO PARA MI",
+"QUE BELLEZA",
+"ME TIENES EMBOBADO"
+];
+
+function show(id){
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+setTimeout(()=>show('s2'),7000);
+
+function openBook(){
+ show('s3');
+ setTimeout(()=>{show('s4'); bg.pause(); ellaSong.play(); loadElla()},3000);
+}
+
+let revealed=0;
+function loadElla(){
+ for(let i=1;i<=8;i++){
+  const c=document.createElement('div');
+  c.className='card';
+  const img=document.createElement('img');
+  img.src=`ella${i}.jpg`;
+  const cov=document.createElement('div');
+  cov.className='cover';
+  c.append(img,cov);
+  c.onclick=()=>{
+    cov.remove();
+    img.style.display='block';
+    const m=document.createElement('div');
+    m.className='msg';
+    m.textContent=frases[Math.floor(Math.random()*frases.length)];
+    c.append(m);
+    setTimeout(()=>m.remove(),1500);
+    revealed++;
+    if(revealed===8)setTimeout(()=>show('s5'),1500);
+  }
+  ellaGrid.append(c);
+ }
+}
+
+function loadNos(){
+ nosSong.play();
+ for(let i=1;i<=8;i++){
+  const c=document.createElement('div');
+  c.className='card';
+  const img=document.createElement('img');
+  img.src=`nos${i}.jpg`;
+  const cov=document.createElement('div');
+  cov.className='cover';
+  c.append(img,cov);
+  c.onclick=()=>{cov.remove();img.style.display='block'}
+  nosGrid.append(c);
+ }
+}
+
+setTimeout(loadNos,0);
+
+function revealElla(){
+ nosSong.pause();
+ yoSong.play();
+ show('s7');
+}
+
+function sorpresa(){
+ yoSong.pause();
+ bg.play();
+ show('s8');
+}
+</script>
+
+</body>
+</html>
